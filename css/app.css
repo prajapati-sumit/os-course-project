@@ -10,7 +10,7 @@
   height: 5em;
   float: left;
   display: block;
-  color: whitesmoke;
+  color: rgb(0, 0, 0);
   font-weight: 500;
 }
 
@@ -60,16 +60,6 @@ a {
   color: whitesmoke;
   border-radius: 0%;
   border-color: whitesmoke;
-}
-#preloader {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #000000;
-  z-index: 99;
-
 }
 #status {
   width: 200px;
