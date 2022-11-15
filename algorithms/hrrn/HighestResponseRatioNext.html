@@ -1,0 +1,61 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="../../css/app.css" />
+    <link rel="stylesheet" href="../../css/menu.css" />
+    <link rel="stylesheet" href="../../css/util.css" />
+    <link rel="icon" href="../../images/cpu.png" type="image/icon type">
+    <title>First Come First Serve</title>
+    <script src="../../js/jquery-3.1.0.min.js"></script>
+
+</head>
+
+<body>
+    <header id="header">
+        <nav class="links" style="--items: 5;">
+            <a href="../fcfs/">First Come First Serve (FCFS)</a>
+            <a href="../ndf/NearestDeadlineFirst.html">Nearest Deadline First</a>
+            <a href="HighestResponseRatioNext.html">HighestResponseRatioNext</a>
+
+            <span class="line"></span>
+        </nav>
+    </header>
+    <br><br><br><br>
+    <h2>First Come First Serve</h2>
+    <br><br>
+    <center>
+        <table border="1" id="table" class="table">
+            <thead>
+                <tr>
+                    <td>Process Name</td>
+                    <td>Arrival Time</td>
+                    <td>Burst Time</td>
+                    <td>Turn-Around Time</td>
+                    <td>Waiting Time</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="3">Average</td>
+                    <td><span id="AVG_TAT"></span></td>
+                    <td><span id="AVG_WT"></span></td>
+                </tr>
+            </tbody>
+        </table>
+        <br />
+        <br /><br />
+        <button type="button" class="addBtn" onclick="addRow();">Add Row</button>
+        <button type="button" class="addBtn" onclick="deleteRow();">Delete Row</button>
+        <br /><br />
+        <div style="width: 80%">
+            <div id="ganttChart">
+            </div>
+        </div>
+        <div style="clear: both;"></div>
+        <p id="errorMessage" style="color:red;"></p>
+        <button id="compute" onclick="compute()">Compute</button>
+    </center>
+</body>
+<script src="HighestResponseRatioNext.js"></script>
+
+</html>
