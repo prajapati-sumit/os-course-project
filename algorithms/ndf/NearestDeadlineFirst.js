@@ -11,6 +11,7 @@ var colors = [
 ];
 var numColors = colors.length;
 var numProcess = 0;
+var tmp = [];
 var initialNumProcess = 4;
 function init() {
     for (var i = 0; i < initialNumProcess; i++) addRow();
@@ -97,8 +98,13 @@ function compute() {
     var arrivalTimeArr = Array.from(
         document.getElementsByClassName('arrivalTime')
     ).map((entry) => parseFloat(entry.value));
+
     var burstTimeArr = Array.from(
         document.getElementsByClassName('burstTime')
+    ).map((entry) => parseFloat(entry.value));
+
+    var deadlineArr = Array.from(
+        document.getElementsByClassName('deadline')
     ).map((entry) => parseFloat(entry.value));
 
     var processes = arrivalTimeArr.map((entry, idx) => {
@@ -106,13 +112,13 @@ function compute() {
             pId: idx,
             arrivalTime: arrivalTimeArr[idx],
             burstTime: burstTimeArr[idx],
+            deadline: deadlineArr[idx],
         };
     });
 
     //-------------------------------------Main Algorithm (input is array of 'processes')-----------------------------------------
 
     var slots = NearestDeadlineFirst(processes);
-    console.log(processes, slots);
     //----------------------------------------output will be array of 'slots'---------------------------------------------------
 
     var totalTime = slots.at(-1).end;
@@ -121,7 +127,7 @@ function compute() {
         var start = slots[i].start;
         var end = slots[i].end;
 
-        var curWidth = ((end - start) / (totalTime * 1.05)) * 100;
+        var curWidth = ((end - start) / (totalTime * 1.1)) * 100;
         if (pId == -1) {
             ganttChart.innerHTML +=
                 '<div class="gantt_block" style="background-color: #B9B9B9' +
@@ -209,16 +215,24 @@ function addRow() {
     cell0.innerHTML = 'P' + numProcess;
 
     var cell1 = row.insertCell(-1);
+    tmp.push(Math.floor(Math.random() * 20 + 1));
     cell1.innerHTML =
         '<input type="text" class="arrivalTime" id =P' +
         numProcess +
         ' ' +
         'value=' +
-        Math.floor(Math.random() * 20 + 1) +
+        tmp.at(-1) +
         '>';
-
     var cell2 = row.insertCell(-1);
     cell2.innerHTML =
+        '<input type="text" class="deadline" id =P' +
+        numProcess +
+        ' ' +
+        'value=' +
+        Math.floor(tmp.at(-1) + Math.random() * 20 + 1) +
+        '>';
+    var cell3 = row.insertCell(-1);
+    cell3.innerHTML =
         '<input type="text" class="burstTime" id =P' +
         numProcess +
         ' ' +

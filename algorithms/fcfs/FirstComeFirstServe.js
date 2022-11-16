@@ -83,7 +83,7 @@ function compute() {
         var start = slots[i].start;
         var end = slots[i].end;
 
-        var curWidth = ((end - start) / (totalTime * 1.05)) * 100;
+        var curWidth = ((end - start) / (totalTime * 1.1)) * 100;
         if (pId == -1) {
             ganttChart.innerHTML +=
                 '<div class="gantt_block" style="background-color: #B9B9B9' +
