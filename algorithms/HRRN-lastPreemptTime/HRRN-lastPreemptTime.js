@@ -15,39 +15,106 @@ var initialNumProcess = 4;
 function init() {
     for (var i = 0; i < initialNumProcess; i++) addRow();
 }
-function FirstComeFirstServe(processes) {
-    var slots = [];
 
-    processes.sort(function (a, b) {
-        return a.arrivalTime - b.arrivalTime;
-    });
-    var globalStartTime = 0;
-    var globalEndTime = 0;
-    console.assert(processes.length == numProcess);
-    for (var p = 0; p < numProcess; p++) {
-        var pId = processes[p].pId;
-        var arrivalTime = processes[p].arrivalTime;
-        var burstTime = processes[p].burstTime;
-        if (globalStartTime < arrivalTime) {
-            slots.push({
-                pId: -1,
-                start: globalStartTime,
-                end: arrivalTime,
+function find(burstTime, n, visited, curTime, lastPreemptTime, arrivalTime) {
+    var mx = -1;
+    var ans = -1;
+    for (var i = 0; i <= n; i += 1) {
+        if (!visited[i] && arrivalTime[i] <= curTime) {
+            var metric = curTime - lastPreemptTime[i];
+            var priority = (metric + burstTime[i]) / burstTime[i];
+            if (priority > mx) {
+                mx = priority;
+                ans = i;
+            }
+        }
+    }
+    return ans;
+}
+
+function mergeProcesses(schedule) {
+    var ptr = 0;
+    var finalSchedule = [];
+    while (ptr < schedule.length) {
+        var start = ptr;
+        var k = schedule[ptr].pId;
+        var total = 0;
+        while (ptr < schedule.length && schedule[ptr].pId == k) {
+            total += 1;
+            ptr += 1;
+        }
+        finalSchedule.push({
+            pId: k,
+            start: schedule[start].start,
+            end: schedule[start].start + total,
+        });
+    }
+    return finalSchedule;
+}
+
+function lastPreemptTime(processes) {
+    var burstTime = [];
+    var arrivalTime = [];
+    var finalSchedule = [];
+    var lastPreemptTime = [];
+    const n = processes.length;
+    for (var i = 0; i < n; i += 1) {
+        burstTime.push(processes[i].burstTime);
+        arrivalTime.push(processes[i].arrivalTime);
+        lastPreemptTime.push(processes[i].arrivalTime);
+    }
+
+    var schedule = [];
+    var curTime = 0;
+    var done = 0;
+    var visited = [];
+    var completed = [];
+
+    for (var i = 0; i < n; i += 1) {
+        visited.push(0);
+        completed.push(0);
+    }
+    while (done < n) {
+        var process = find(
+            burstTime,
+            n,
+            visited,
+            curTime,
+            lastPreemptTime,
+            arrivalTime
+        );
+
+        if (process != -1) {
+            schedule.push({
+                pId: process,
+                start: curTime,
+                end: curTime + 1,
             });
-            globalStartTime = arrivalTime;
+            completed[process] += 1;
+            if (completed[process] == burstTime[process]) {
+                done += 1;
+                visited[process] = 1;
+            }
+            if (schedule.length > 0) {
+                var lastPId = schedule[schedule.length - 1].pId;
+                if (lastPId != -1) {
+                    lastPreemptTime[lastPId] = curTime;
+                }
+            }
+        } else {
+            schedule.push({
+                pId: -1,
+                start: curTime,
+                end: curTime + 1,
+            });
         }
 
-        globalEndTime = globalStartTime + burstTime;
-        slots.push({
-            pId: pId,
-            start: globalStartTime,
-            end: globalEndTime,
-        });
-
-        globalStartTime = globalEndTime;
+        curTime += 1;
     }
-    return slots;
+    var finalSchedule = mergeProcesses(schedule);
+    return finalSchedule;
 }
+
 function compute() {
     if (!checkValues()) return;
 
@@ -73,7 +140,7 @@ function compute() {
 
     //-------------------------------------Main Algorithm (input is array of 'processes')-----------------------------------------
 
-    var slots = FirstComeFirstServe(processes);
+    var slots = lastPreemptTime(processes);
 
     //----------------------------------------output will be array of 'slots'---------------------------------------------------
 
@@ -111,8 +178,8 @@ function compute() {
             end +
             '</div>';
 
-        var wt = start;
-        var tat = end;
+        var tat = end - arrivalTimeArr[pId];
+        var wt = tat - burstTimeArr[pId];
         document.getElementById('P' + pId + '_TAT').innerText = tat;
         document.getElementById('P' + pId + '_WT').innerText = wt;
     }
@@ -121,13 +188,17 @@ function compute() {
     Array.from(document.getElementsByClassName('TAT')).forEach(function (el) {
         totalTat += parseFloat(el.innerText);
     });
-    document.getElementById('AVG_TAT').innerText = totalTat / numProcess;
+    document.getElementById('AVG_TAT').innerText = (
+        totalTat / numProcess
+    ).toFixed(2);
     var totalWt = 0;
     Array.from(document.getElementsByClassName('WT')).forEach(function (el) {
         totalWt += parseFloat(el.innerText);
     });
     // console.log(totalTat, totalWt, numProcess);
-    document.getElementById('AVG_WT').innerText = totalWt / numProcess;
+    document.getElementById('AVG_WT').innerText = (
+        totalWt / numProcess
+    ).toFixed(2);
 }
 
 function checkValues() {

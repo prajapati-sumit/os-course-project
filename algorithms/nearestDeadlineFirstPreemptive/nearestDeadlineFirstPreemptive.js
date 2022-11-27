@@ -12,16 +12,37 @@ var colors = [
 var numColors = colors.length;
 var numProcess = 0;
 var tmp = [];
+var tmp2 = [];
 var initialNumProcess = 4;
 function init() {
     for (var i = 0; i < initialNumProcess; i++) addRow();
 }
+function MergeProcesses(schedule) {
+    var ptr = 0;
+    var finalSchedule = [];
+    while (ptr < schedule.length) {
+        var start = ptr;
+        var k = schedule[ptr].pId;
+        var total = 0;
+        while (ptr < schedule.length && schedule[ptr].pId == k) {
+            total += 1;
+            ptr += 1;
+        }
+        finalSchedule.push({
+            pId: k,
+            start: schedule[start].start,
+            end: schedule[start].start + total,
+        });
+    }
+    return finalSchedule;
+}
+
 function NearestDeadlineFirst(processes) {
     const MX = 1e9;
     var burstTime = [];
     var deadline = [];
     var arrivalTime = [];
-    var finalSchedule = [];
+
     const n = processes.length;
     for (var i = 0; i < n; i += 1) {
         burstTime.push(processes[i].burstTime);
@@ -36,8 +57,10 @@ function NearestDeadlineFirst(processes) {
     var curTime = 0;
     var done = 0;
     var visited = [];
+    var completed = [];
     for (var i = 0; i < n; i += 1) {
         visited.push(0);
+        completed.push(0);
     }
     while (done < n) {
         var mn = MX;
@@ -52,11 +75,14 @@ function NearestDeadlineFirst(processes) {
             schedule.push({
                 pId: process,
                 start: curTime,
-                end: curTime + burstTime[process],
+                end: curTime + 1,
             });
-            done += 1;
-            curTime += burstTime[process];
-            visited[process] = 1;
+            curTime += 1;
+            completed[process] += 1;
+            if (completed[process] == burstTime[process]) {
+                done += 1;
+                visited[process] = 1;
+            }
         } else {
             schedule.push({
                 pId: -1,
@@ -66,25 +92,7 @@ function NearestDeadlineFirst(processes) {
             curTime += 1;
         }
     }
-    var ptr = 0;
-    while (ptr < schedule.length) {
-        if (schedule[ptr].pId != -1) {
-            finalSchedule.push(schedule[ptr]);
-            ptr += 1;
-            continue;
-        }
-        var total = 0;
-        var o = ptr;
-        while (ptr < schedule.length && schedule[ptr].pId == -1) {
-            total += 1;
-            ptr++;
-        }
-        finalSchedule.push({
-            pId: -1,
-            start: schedule[o].start,
-            end: schedule[o].start + total,
-        });
-    }
+    var finalSchedule = MergeProcesses(schedule);
     return finalSchedule;
 }
 function compute() {
@@ -155,8 +163,8 @@ function compute() {
             end +
             '</div>';
 
-        var wt = start;
-        var tat = end;
+        var tat = end - arrivalTimeArr[pId];
+        var wt = tat - burstTimeArr[pId];
         document.getElementById('P' + pId + '_TAT').innerText = tat;
         document.getElementById('P' + pId + '_WT').innerText = wt;
     }
@@ -165,13 +173,17 @@ function compute() {
     Array.from(document.getElementsByClassName('TAT')).forEach(function (el) {
         totalTat += parseFloat(el.innerText);
     });
-    document.getElementById('AVG_TAT').innerText = totalTat / numProcess;
+    document.getElementById('AVG_TAT').innerText = (
+        totalTat / numProcess
+    ).toFixed(2);
     var totalWt = 0;
     Array.from(document.getElementsByClassName('WT')).forEach(function (el) {
         totalWt += parseFloat(el.innerText);
     });
     // console.log(totalTat, totalWt, numProcess);
-    document.getElementById('AVG_WT').innerText = totalWt / numProcess;
+    document.getElementById('AVG_WT').innerText = (
+        totalWt / numProcess
+    ).toFixed(2);
 }
 
 function checkValues() {
@@ -216,6 +228,7 @@ function addRow() {
 
     var cell1 = row.insertCell(-1);
     tmp.push(Math.floor(Math.random() * 20 + 1));
+    tmp2.push(Math.floor(Math.random() * 20 + 1));
     cell1.innerHTML =
         '<input type="text" class="arrivalTime" id =P' +
         numProcess +
@@ -229,7 +242,7 @@ function addRow() {
         numProcess +
         ' ' +
         'value=' +
-        Math.floor(tmp.at(-1) + Math.random() * 20 + 1) +
+        Math.floor(tmp.at(-1) + tmp2.at(-1) + Math.random() * 20 + 1) +
         '>';
     var cell3 = row.insertCell(-1);
     cell3.innerHTML =
@@ -237,7 +250,7 @@ function addRow() {
         numProcess +
         ' ' +
         'value=' +
-        Math.floor(Math.random() * 20 + 1) +
+        tmp2.at(-1) +
         '>';
 
     var cell3 = row.insertCell(-1);

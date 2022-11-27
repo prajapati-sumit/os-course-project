@@ -11,28 +11,16 @@ var colors = [
 ];
 var numColors = colors.length;
 var numProcess = 0;
+var tmp = [];
+var tmp2 = [];
 var initialNumProcess = 4;
 function init() {
     for (var i = 0; i < initialNumProcess; i++) addRow();
 }
-function findHRR(arrivalTime, burstTime, n, visited, curTime) {
-    var mx = -1;
-    var ans = -1;
-    for (var i = 0; i < n; i += 1) {
-        if (!visited[i] && arrivalTime[i] <= curTime) {
-            var waitingTimeYet = curTime - arrivalTime[i];
-            var hrr = (waitingTimeYet + burstTime[i]) / burstTime[i];
-            if (hrr > mx) {
-                mx = hrr;
-                ans = i;
-            }
-        }
-    }
-    return ans;
-}
-
-function HRRN(processes) {
+function NearestDeadlineFirst(processes) {
+    const MX = 1e9;
     var burstTime = [];
+    var deadline = [];
     var arrivalTime = [];
     var finalSchedule = [];
     const n = processes.length;
@@ -40,22 +28,30 @@ function HRRN(processes) {
         burstTime.push(processes[i].burstTime);
     }
     for (var i = 0; i < n; i += 1) {
+        deadline.push(processes[i].deadline);
+    }
+    for (var i = 0; i < n; i += 1) {
         arrivalTime.push(processes[i].arrivalTime);
     }
-
-    schedule = [];
+    var schedule = [];
     var curTime = 0;
     var done = 0;
-    visited = [];
+    var visited = [];
     for (var i = 0; i < n; i += 1) {
         visited.push(0);
     }
     while (done < n) {
-        var process = findHRR(arrivalTime, burstTime, n, visited, curTime);
-        // console.log(process);
-        if (process != -1) {
+        var mn = MX;
+        var process = -1;
+        for (var i = 0; i < n; i += 1) {
+            if (arrivalTime[i] <= curTime && deadline[i] < mn && !visited[i]) {
+                mn = deadline[i];
+                process = processes[i].pId;
+            }
+        }
+        if (mn != MX) {
             schedule.push({
-                pId: processes[process].pId,
+                pId: process,
                 start: curTime,
                 end: curTime + burstTime[process],
             });
@@ -92,7 +88,6 @@ function HRRN(processes) {
     }
     return finalSchedule;
 }
-
 function compute() {
     if (!checkValues()) return;
 
@@ -104,8 +99,13 @@ function compute() {
     var arrivalTimeArr = Array.from(
         document.getElementsByClassName('arrivalTime')
     ).map((entry) => parseFloat(entry.value));
+
     var burstTimeArr = Array.from(
         document.getElementsByClassName('burstTime')
+    ).map((entry) => parseFloat(entry.value));
+
+    var deadlineArr = Array.from(
+        document.getElementsByClassName('deadline')
     ).map((entry) => parseFloat(entry.value));
 
     var processes = arrivalTimeArr.map((entry, idx) => {
@@ -113,13 +113,13 @@ function compute() {
             pId: idx,
             arrivalTime: arrivalTimeArr[idx],
             burstTime: burstTimeArr[idx],
+            deadline: deadlineArr[idx],
         };
     });
 
     //-------------------------------------Main Algorithm (input is array of 'processes')-----------------------------------------
 
-    var slots = HRRN(processes);
-
+    var slots = NearestDeadlineFirst(processes);
     //----------------------------------------output will be array of 'slots'---------------------------------------------------
 
     var totalTime = slots.at(-1).end;
@@ -156,8 +156,8 @@ function compute() {
             end +
             '</div>';
 
-        var wt = start;
-        var tat = end;
+        var tat = end - arrivalTimeArr[pId];
+        var wt = tat - burstTimeArr[pId];
         document.getElementById('P' + pId + '_TAT').innerText = tat;
         document.getElementById('P' + pId + '_WT').innerText = wt;
     }
@@ -166,13 +166,17 @@ function compute() {
     Array.from(document.getElementsByClassName('TAT')).forEach(function (el) {
         totalTat += parseFloat(el.innerText);
     });
-    document.getElementById('AVG_TAT').innerText = totalTat / numProcess;
+    document.getElementById('AVG_TAT').innerText = (
+        totalTat / numProcess
+    ).toFixed(2);
     var totalWt = 0;
     Array.from(document.getElementsByClassName('WT')).forEach(function (el) {
         totalWt += parseFloat(el.innerText);
     });
     // console.log(totalTat, totalWt, numProcess);
-    document.getElementById('AVG_WT').innerText = totalWt / numProcess;
+    document.getElementById('AVG_WT').innerText = (
+        totalWt / numProcess
+    ).toFixed(2);
 }
 
 function checkValues() {
@@ -216,21 +220,30 @@ function addRow() {
     cell0.innerHTML = 'P' + numProcess;
 
     var cell1 = row.insertCell(-1);
+    tmp.push(Math.floor(Math.random() * 20 + 1));
+    tmp2.push(Math.floor(Math.random() * 20 + 1));
     cell1.innerHTML =
         '<input type="text" class="arrivalTime" id =P' +
         numProcess +
         ' ' +
         'value=' +
-        Math.floor(Math.random() * 20 + 1) +
+        tmp.at(-1) +
         '>';
-
     var cell2 = row.insertCell(-1);
     cell2.innerHTML =
+        '<input type="text" class="deadline" id =P' +
+        numProcess +
+        ' ' +
+        'value=' +
+        Math.floor(tmp.at(-1) + tmp2.at(-1) + Math.random() * 20 + 1) +
+        '>';
+    var cell3 = row.insertCell(-1);
+    cell3.innerHTML =
         '<input type="text" class="burstTime" id =P' +
         numProcess +
         ' ' +
         'value=' +
-        Math.floor(Math.random() * 20 + 1) +
+        tmp2.at(-1) +
         '>';
 
     var cell3 = row.insertCell(-1);

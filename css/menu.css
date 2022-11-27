@@ -1,13 +1,17 @@
 body {
-    background-color: white;
+    background-color:  #49484c;
 }
+/* #4b4a54; */
 .links {
-	background-color:   rgba(102, 204, 51, 0.781);
+	/* background-color:   rgba(102, 204, 51, 0.781); */
 	box-shadow: 0 0 32px #0003;
+	font-family:  'Oswald', sans-serif;
     font-weight: 500;
 }
 .links > a {
-	color: black;
+	background-color:   #5D8791;
+	color: white;
+	width: auto;
 	padding: .75em;
 	text-align: center;
 	text-decoration: none;
@@ -15,7 +19,7 @@ body {
 }
 .links > a:hover {
 	background: #ffffff06;
-	color: black;
+	color: white;
 }
 .links > .line {
 	background: black;
@@ -24,16 +28,19 @@ body {
 
 #header {
 	position: fixed;
-	top: 0;
+	top: 25px;
 	left: 0;
 	right: 0;
-    width: 100%;
-    height: 7%;
+    width: 20%;
+    height: 100%;
 }
 .links {
 	display: grid;
-	grid-template-columns: repeat(var(--items), 1fr);
+	grid-template-rows: repeat(var(--items), 1fr);
+	row-gap: 10px;
 	position: relative;
+	width: 10%;
+	border-radius: 6px;
 }
 .links > .line {
 	opacity: 0;

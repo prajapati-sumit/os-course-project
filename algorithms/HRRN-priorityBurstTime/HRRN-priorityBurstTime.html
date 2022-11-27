@@ -1,0 +1,84 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="../../css/app.css" />
+    <link rel="stylesheet" href="../../css/menu.css" />
+    <link rel="stylesheet" href="../../css/util.css" />
+    <link rel="stylesheet" href="../../css/gantt.css">
+    <script src="../../js/jquery-3.1.0.min.js"></script>
+    <link rel="icon" href="../../images/cpu.png" type="image/icon type">
+
+    <title>HRNN-priorityBurstTime</title>
+</head>
+
+<body>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Oswald&display=swap');
+    </style>
+    <header id="header">
+        <nav class="links" style="--items: 5;">
+            <a href="../firstComeFirstServe/firstComeFirstServe.html">firstComeFirstServe</a>
+            <a href="../HRRN-standard/HRRN-standard.html">HRRN-standard</a>
+            <a href="HRRN-priorityBurstTime.html">HRRN-priorityBurstTime</a>
+            <a href="../HRRN-lastPreemptTime/HRRN-lastPreemptTime.html">HRRN-lastPreemptTime</a>
+            <a href="../makeSpanOffline/makeSpanOffline.html">makeSpanOffline</a>
+            <a href="../makeSpanOnline/makeSpanOnline.html">makeSpanOnline</a>
+            <a href="../nearestDeadlineFirst/nearestDeadlineFirst.html">nearestDeadlineFirst</a>
+            <a
+                href="../nearestDeadlineFirstPreemptive/nearestDeadlineFirstPreemptive.html">nearestDeadlineFirstPreemptive</a>
+
+            <a href="../precedenceGraph/precedenceGraph.html">precedenceGraph</a>
+            <span class="line"></span>
+        </nav>
+    </header>
+    <br><br>
+    <div class="algoName">
+        <h2>HRNN-priorityBurstTime</h2>
+    </div>
+    <center>
+        <div class="table-wrapper">
+            <div class="limiter">
+                <div class="container-table100">
+                    <div class="wrap-table100">
+                        <div class="table100">
+                            <table border="1" id="table" class="table">
+                                <thead>
+                                    <tr>
+                                        <th class="colTitle">Process Name</th>
+                                        <th class="colTitle">Arrival Time</th>
+                                        <th class="colTitle">Priority</th>
+                                        <th class="colTitle">Burst Time</th>
+                                        <th class="colTitle">Turn-Around Time</th>
+                                        <th class="colTitle">Waiting Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td colspan="3">Average</td>
+                                        <td><span id="AVG_TAT"></span></td>
+                                        <td><span id="AVG_WT"></span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <button type="button" class="addBtn" onclick="addRow();">Add Row</button>
+            <button type="button" class="addBtn" onclick="deleteRow();">Delete Row</button>
+            <br>
+            <button id="compute" onclick="compute()">Compute</button>
+            <div id="ganttDiv" style="width: 80%">
+                <div id="ganttChart">
+                </div>
+            </div>
+            <div style="clear: both;"></div>
+            <p id="errorMessage" style="color:red;"></p>
+
+    </center>
+</body>
+<script src="HRRN-priorityBurstTime.js"></script>
+
+
+</html>
