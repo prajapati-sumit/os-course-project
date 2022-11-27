@@ -22,11 +22,9 @@ function init() {
 
 function topSortDfs(cur, graph, visited, topSortOrder, burstTime) {
     visited[cur] = true;
-    // console.log(cur, graph);
     graph[cur].sort((a, b) => {
         return burstTime[a] - burstTime[b];
     });
-    console.log(graph, cur);
     graph[cur].forEach((next) => {
         if (!visited[next])
             topSortDfs(next, graph, visited, topSortOrder, burstTime);
@@ -118,15 +116,14 @@ function compute() {
         document.getElementsByClassName('burstTime')
     ).map((entry) => parseFloat(entry.value));
 
-
-    graph = new Array(numProcess).fill([]);
     var from = Array.from(document.getElementsByClassName('from')).map(
         (entry) => parseFloat(entry.value)
     );
-    var to = Array.from(document.getElementsByClassName('to')).map(
-        (entry) => parseFloat(entry.value)
+    var to = Array.from(document.getElementsByClassName('to')).map((entry) =>
+        parseFloat(entry.value)
     );
-    console.log(from, to, graph, numEdges);
+    graph = [];
+    for (var i = 0; i < numProcess; i++) graph.push([]);
     for (var e = 0; e < numEdges; e++) {
         graph[from[e]].push(to[e]);
     }
