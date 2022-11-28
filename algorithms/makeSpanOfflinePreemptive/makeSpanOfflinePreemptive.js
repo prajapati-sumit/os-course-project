@@ -15,37 +15,44 @@ var initialNumProcess = 4;
 function init() {
     for (var i = 0; i < initialNumProcess; i++) addRow();
 }
-function makespanNonPreOffline(processes, m) {
-    const MX = 1e9;
-    var burstTime = [];
-    var finalSchedule = [];
+function makespanPre(processes) {
     const n = processes.length;
+    var burstTime = [];
+    var totalSum = [];
     for (var i = 0; i < n; i += 1) {
-        burstTime.push([processes[i].burstTime, processes[i].pId]);
-    }
-    burstTime.sort((a, b) => {
-        return a[0] - b[0];
-    });
-    burstTime.reverse();
-    // console.log(burstTime);
-    var curTimeCore = [];
-    for (var i = 0; i < m; i++) {
-        curTimeCore.push(0);
+        burstTime.push(processes[i].burstTime);
     }
     for (var i = 0; i < m; i++) {
-        finalSchedule.push([]);
+        totalSum.push(0);
     }
-    console.log(finalSchedule);
+    for (var i = 0; i < n; i++) {
+        sum += burstTime[i];
+    }
+    const d = parseInt(sum / m);
+    d += 1;
+
+    var ptr = 0;
+
     for (var i = 0; i < n; i += 1) {
-        finalSchedule[i % m].push({
-            pId: burstTime[i][1],
-            start: curTimeCore[i % m],
-            end: curTimeCore[i % m] + burstTime[i][0],
-        });
-        // console.log(burstTime[i], curTimeCore[i%m], finalSchedule[i % m]);
-        curTimeCore[i % m] += burstTime[i][0];
+        if (totalSum[ptr] + burstTime[i] < d) {
+            allocation[ptr].push({
+                pId: processes.pId,
+                start: totalSum[ptr],
+                end: totalSum[ptr] + burstTime[i],
+            });
+            totalSum[ptr] += burstTime[i];
+        } else {
+            allocation[ptr].push({
+                pId: processes.pId,
+                start: totalSum[ptr],
+                end: d,
+            });
+            totalSum[ptr] = d;
+            i--;
+            ptr++;
+        }
     }
-    return finalSchedule;
+    return allocation;
 }
 function compute() {
     if (!checkValues()) return;

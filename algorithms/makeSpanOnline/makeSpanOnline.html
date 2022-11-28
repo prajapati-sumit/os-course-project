@@ -8,7 +8,7 @@
     <script src="../../js/jquery-3.1.0.min.js"></script>
     <link rel="icon" href="../../images/cpu.png" type="image/icon type">
 
-    <title>firstComeFirstServe</title>
+    <title>makeSpanOnline</title>
 </head>
 
 <body>
@@ -17,14 +17,14 @@
     </style>
     <header id="header">
         <nav class="links" style="--items: 5;">
-            <a href="firstComeFirstServe.html">firstComeFirstServe</a>
+            <a href="../firstComeFirstServe/firstComeFirstServe.html">firstComeFirstServe</a>
             <a href="../HRRN-standard/HRRN-standard.html">HRRN-standard</a>
             <a href="../HRRN-priorityBurstTime/HRRN-priorityBurstTime.html">HRRN-priorityBurstTime</a>
             <a href="../HRRN-lastPreemptTime/HRRN-lastPreemptTime.html">HRRN-lastPreemptTime</a>
             <a href="../makeSpanOffline/makeSpanOffline.html">makeSpanOffline</a>
             <a href="../makeSpanOfflinePreemptive/makeSpanOfflinePreemptive.html">makeSpanOfflinePreemptive</a>
 
-            <a href="../makeSpanOnline/makeSpanOnline.html">makeSpanOnline</a>
+            <a href="makeSpanOnline.html">makeSpanOnline</a>
             <a href="../nearestDeadlineFirst/nearestDeadlineFirst.html">nearestDeadlineFirst</a>
             <a
                 href="../nearestDeadlineFirstPreemptive/nearestDeadlineFirstPreemptive.html">nearestDeadlineFirstPreemptive</a>
@@ -35,7 +35,7 @@
     </header>
     <br><br>
     <div class="algoName">
-        <h2>firstComeFirstServe</h2>
+        <h2>makeSpanOnline</h2>
     </div>
     <center>
         <div class="table-wrapper">
@@ -47,13 +47,17 @@
                                 <thead>
                                     <tr>
                                         <th class="colTitle">Process Name</th>
-                                        <th class="colTitle">Arrival Time</th>
                                         <th class="colTitle">Burst Time</th>
                                         <th class="colTitle">Turn-Around Time</th>
                                         <th class="colTitle">Waiting Time</th>
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    <tr>
+                                        <td colspan="1">
+                                            <input id="numCores" placeholder="Cores (default 1)">
+                                        </td>
+                                    </tr>
                                     <tr>
                                         <td colspan="3">Average</td>
                                         <td><span id="AVG_TAT"></span></td>
@@ -71,14 +75,14 @@
             <br>
             <button id="compute" onclick="compute()">Compute</button>
             <div id="ganttDiv" style="width: 80%">
-                
+
             </div>
             <div style="clear: both;"></div>
             <p id="errorMessage" style="color:red;"></p>
 
     </center>
 </body>
-<script src="firstComeFirstServe.js"></script>
+<script src="makeSpanOnline.js"></script>
 
 
 </html>

@@ -12,7 +12,10 @@ html {
 div {
     max-width: 100%;
 }
-
+#ganttDiv {
+    display: flex;
+    flex-direction: column;
+}
 .gantt_block {
     text-align: center;
     padding: 0.4em;
