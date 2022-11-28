@@ -15,7 +15,7 @@ var initialNumProcess = 4;
 function init() {
     for (var i = 0; i < initialNumProcess; i++) addRow();
 }
-function makespanPre(processes) {
+function makespanPre(processes, m) {
     const n = processes.length;
     var burstTime = [];
     var totalSum = [];
@@ -25,29 +25,35 @@ function makespanPre(processes) {
     for (var i = 0; i < m; i++) {
         totalSum.push(0);
     }
+    var sum = 0;
     for (var i = 0; i < n; i++) {
         sum += burstTime[i];
     }
-    const d = parseInt(sum / m);
-    d += 1;
-
+    const d = parseInt(sum / m) + 1;
+    console.log(d);
     var ptr = 0;
-
+    var allocation = [];
+    for (var i = 0; i < m; i++) allocation.push([]);
     for (var i = 0; i < n; i += 1) {
+        console.log(allocation, ptr);
+        if (burstTime[i] == 0) continue;
         if (totalSum[ptr] + burstTime[i] < d) {
             allocation[ptr].push({
-                pId: processes.pId,
+                pId: processes[i].pId,
                 start: totalSum[ptr],
                 end: totalSum[ptr] + burstTime[i],
             });
             totalSum[ptr] += burstTime[i];
         } else {
             allocation[ptr].push({
-                pId: processes.pId,
+                pId: processes[i].pId,
                 start: totalSum[ptr],
                 end: d,
             });
+            burstTime[i] -= d - totalSum[ptr];
             totalSum[ptr] = d;
+            // burstTime[i] =
+            // totalSum[ptr] + burstTime[i] >= d
             i--;
             ptr++;
         }
@@ -81,10 +87,10 @@ function compute() {
     // console.log(processes, numCores);
     //-------------------------------------Main Algorithm (input is array of 'processes')-----------------------------------------
 
-    var slots = makespanNonPreOffline(processes, numCores);
+    var slots = makespanPre(processes, numCores);
 
     //----------------------------------------output will be array of 'slots'---------------------------------------------------
-    // console.log(slots);
+    console.log(slots);
     // assert(0);
     var totalTime = slots.at(-1).end;
     for (var j = 0; j < numCores; j++) {
@@ -130,7 +136,7 @@ function compute() {
             var tat = end;
             var wt = tat - burstTimeArr[pId];
             document.getElementById('P' + pId + '_TAT').innerText = tat;
-            document.getElementById('P' + pId + '_WT').innerText = wt;
+            // document.getElementById('P' + pId + '_WT').innerText = wt;
         }
     }
 
@@ -146,9 +152,9 @@ function compute() {
         totalWt += parseFloat(el.innerText);
     });
     // console.log(totalTat, totalWt, numProcess);
-    document.getElementById('AVG_WT').innerText = (
-        totalWt / numProcess
-    ).toFixed(2);
+    // document.getElementById('AVG_WT').innerText = (
+    //     totalWt / numProcess
+    // ).toFixed(2);
 }
 
 function checkValues() {

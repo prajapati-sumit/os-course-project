@@ -37,7 +37,7 @@ function MergeProcesses(schedule) {
     return finalSchedule;
 }
 
-function NearestDeadlineFirst(processes) {
+function NearestDeadlineFirstPre(processes) {
     const MX = 1e9;
     var burstTime = [];
     var deadline = [];
@@ -126,7 +126,7 @@ function compute() {
 
     //-------------------------------------Main Algorithm (input is array of 'processes')-----------------------------------------
 
-    var slots = NearestDeadlineFirst(processes);
+    var slots = NearestDeadlineFirstPre(processes);
     //----------------------------------------output will be array of 'slots'---------------------------------------------------
 
     var totalTime = slots.at(-1).end;

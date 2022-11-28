@@ -52,7 +52,7 @@ function compute() {
     if (!checkValues()) return;
 
     // initialising
-    document.getElementById('ganttChart').innerHTML = '';
+    ganttChart.innerHTML = '';
     var processes = [];
 
     // parsing the input

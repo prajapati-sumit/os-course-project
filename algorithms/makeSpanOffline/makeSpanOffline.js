@@ -37,13 +37,23 @@ function makespanNonPreOffline(processes, m) {
     }
     console.log(finalSchedule);
     for (var i = 0; i < n; i += 1) {
-        finalSchedule[i % m].push({
+        var minIdx = -1;
+        var sum = 1e9;
+        for (var j = 0; j < m; j++) {
+            var cur = 0;
+            finalSchedule[j].forEach((e) => {
+                cur += e.end-e.start;
+            });
+            if (cur < sum) (minIdx = j), (sum = cur);
+        }
+        console.log(minIdx, finalSchedule);
+        finalSchedule[minIdx].push({
             pId: burstTime[i][1],
-            start: curTimeCore[i % m],
-            end: curTimeCore[i % m] + burstTime[i][0],
+            start: curTimeCore[minIdx],
+            end: curTimeCore[minIdx] + burstTime[i][0],
         });
         // console.log(burstTime[i], curTimeCore[i%m], finalSchedule[i % m]);
-        curTimeCore[i % m] += burstTime[i][0];
+        curTimeCore[minIdx] += burstTime[i][0];
     }
     return finalSchedule;
 }
@@ -123,7 +133,7 @@ function compute() {
             var tat = end;
             var wt = tat - burstTimeArr[pId];
             document.getElementById('P' + pId + '_TAT').innerText = tat;
-            document.getElementById('P' + pId + '_WT').innerText = wt;
+            // document.getElementById('P' + pId + '_WT').innerText = wt;
         }
     }
 
@@ -134,14 +144,14 @@ function compute() {
     document.getElementById('AVG_TAT').innerText = (
         totalTat / numProcess
     ).toFixed(2);
-    var totalWt = 0;
-    Array.from(document.getElementsByClassName('WT')).forEach(function (el) {
-        totalWt += parseFloat(el.innerText);
-    });
-    // console.log(totalTat, totalWt, numProcess);
-    document.getElementById('AVG_WT').innerText = (
-        totalWt / numProcess
-    ).toFixed(2);
+    // var totalWt = 0;
+    // Array.from(document.getElementsByClassName('WT')).forEach(function (el) {
+    //     totalWt += parseFloat(el.innerText);
+    // });
+    // // console.log(totalTat, totalWt, numProcess);
+    // document.getElementById('AVG_WT').innerText = (
+    //     totalWt / numProcess
+    // ).toFixed(2);
 }
 
 function checkValues() {
